@@ -1,5 +1,9 @@
 # Databricks notebook source
-sc.setJobDescription("Step A: Basic initialization")
+# "wasbs://spark-ui-simulator@dbacademy.blob.core.windows.net/definitive-guide/data/activity-data-stream.json"
+
+# COMMAND ----------
+
+spark.sparkContext.setJobDescription("Step A: Basic initialization")
 
 dataSourcePath = "dbfs:/mnt/training/wikipedia/pagecounts/staging_parquet_en_only_clean"
 
@@ -7,7 +11,7 @@ dataSourcePath = "dbfs:/mnt/training/wikipedia/pagecounts/staging_parquet_en_onl
 
 # COMMAND ----------
 
-sc.setJobDescription("Step B: Read and cache the initial DataFrame")
+spark.sparkContext.setJobDescription("Step B: Read and cache the initial DataFrame")
 
 initialDF = (spark
   .read
@@ -18,7 +22,7 @@ initialDF.foreach(lambda x: None)
 
 # COMMAND ----------
 
-sc.setJobDescription("Step C: A bunch of random transformations")
+spark.sparkContext.setJobDescription("Step C: A bunch of random transformations")
 
 from pyspark.sql.functions import col, upper
 
@@ -35,13 +39,13 @@ total = someDF.count()
 
 # COMMAND ----------
 
-sc.setJobDescription("Step D: Take N records")
+spark.sparkContext.setJobDescription("Step D: Take N records")
 
 all = someDF.take(total)
 
 # COMMAND ----------
 
-sc.setJobDescription("Step E: Create a really big DataFrame")
+spark.sparkContext.setJobDescription("Step E: Create a really big DataFrame")
 
 bigDF = initialDF
 
@@ -52,7 +56,7 @@ bigDF.write.format("noop").mode("overwrite").save()
 
 # COMMAND ----------
 
-sc.setJobDescription("Step F: Streaming Job")
+spark.sparkContext.setJobDescription("Step F: Streaming Job")
 
 from pyspark.sql.functions import window, col
 spark.conf.set("spark.sql.shuffle.partitions", 8)
@@ -73,13 +77,16 @@ display(streamingDF, streamName = "Sample_Stream")
 
 # COMMAND ----------
 
-sc.setJobDescription("Step G: Stop stream after 30 sec")
+spark.sparkContext.setJobDescription("Step G: Stop stream after 30 sec")
 
 import time
-time.sleep(30)
+time.sleep(1)
 
 for stream in spark.streams.active:
-    stream.stop()
+    if stream.name == 'Sample_Stream':
+      stream.stop()
 
 
 # COMMAND ----------
+
+
