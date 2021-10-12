@@ -89,4 +89,3 @@ for stream in spark.streams.active:
 
 # COMMAND ----------
 
-
